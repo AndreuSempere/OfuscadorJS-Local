@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ofuscador Local JS-Confuser</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; background: #f4f4f9; color: #333; }
+        .container { display: flex; gap: 20px; max-width: 1200px; margin: 0 auto; }
+        .box { flex: 1; display: flex; flex-direction: column; }
+        textarea { width: 100%; height: 400px; font-family: monospace; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; resize: none; }
+        button { padding: 12px; background: #007bff; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; margin-top: 10px; }
+        button:hover { background: #0056b3; }
+        h2 { margin-bottom: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1 style="text-align: center;">Mi Ofuscador JS-Confuser Local</h1>
+
+    
+    
+    <div class="container">
+        <!-- Panel Izquierdo: Entrada -->
+        <div class="box">
+            <h2>Código Original</h2>
+            
+            <label for="niveles">Elige el nivel:</label>
+            <select name="niveles" id="niveles">
+                <option value="bajo">Bajo</option>
+                <option value="medio">Medio</option>
+                <option value="alto">Alto</option>
+            </select>
+
+            <textarea id="codigoOriginal" placeholder="Pega tu código JavaScript aquí..."></textarea>
+            <button id="btnOfuscar">Ofuscar Código ⚡</button>
+        </div>
+        
+        <!-- Panel Derecho: Salida -->
+        <div class="box">
+            <h2>Resultado Ofuscado</h2>
+
+            <textarea id="codigoResultado" readonly placeholder="El código ofuscado aparecerá aquí..."></textarea>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('btnOfuscar').addEventListener('click', async () => {
+            const codigo = document.getElementById('codigoOriginal').value;
+            const nivel = document.getElementById('niveles').value;
+            const output = document.getElementById('codigoResultado');
+            
+            if(!codigo.trim()) return alert("Por favor, escribe o pega algo de código primero.");
+            
+            output.value = "Ofuscando...";
+
+            try {
+                const response = await fetch('/ofuscar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        codigo: codigo,
+                        nivel: nivel
+                    })                
+                });
+                
+                const data = await response.json();
+                console.log(data);
+                console.log(typeof data.resultado);
+
+                
+                if (data.error) {
+                    output.value = data.error;
+                } else {
+                    output.value = data.resultado;
+                }
+            } catch (err) {
+                output.value = "Error de conexión con el servidor local.";
+            }
+        });
+    </script>
+</body>
+</html>

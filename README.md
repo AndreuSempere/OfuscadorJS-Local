@@ -1,1 +1,6 @@
-# OfuscadorJS-Local
+Ejecutar:
+
+
+
+node server.js
+
